@@ -17,9 +17,9 @@ module Opener
 
             def command(opts={})
               arguments = opts[:arguments] || []
-              arguments << "-t" if opts[:test]
+              #arguments << "-t" if opts[:test]
 
-              "cat #{opts[:input]} | java -jar #{kernel} -l en #{arguments.join(' ')}"
+              "cat #{opts[:input]} | java -jar #{kernel} -l en -g synt #{arguments.join(' ')}"
 
             end
 

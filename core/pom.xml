@@ -2,13 +2,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ehu</groupId>
-	<artifactId>ehu-opennlp-parse-en</artifactId>
+	<artifactId>ehu-parse</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0</version>
-	<name>ehu-opennlp-parse-en</name>
-	<description>English Constituent Parser module based on Apache OpenNLP API.
-	Models provided by the Apache OpenNLP project.
-	</description>
+	<name>ehu-parse</name>
+	<description>ehu-parse is part of IXA-pipeline and is based on Apache OpenNLP API.
+	In principle the pipeline is available for the annotation of English and Spanish texts, but it can be easily extended to
+	deal with other languages too. All models have been trained by the IXA NLP Group of the University of the
+	Basque Country (ixa.si.ehu.es). This particular module performs Constituent parsing for English.
+        </description>
 	<developers>
 		<developer>
 			<id>ragerri</id>
@@ -25,14 +27,6 @@
 	<url>http://maven.apache.org</url>
 
 	<repositories>
-		<repository>
-		  <id>opener</id>
-		  <url>file://${project.basedir}</url>
-		</repository>
-		<repository>
-			<id>org.apache.opennlp</id>
-			<url>https://repository.apache.org/content/groups/snapshots</url>
-		</repository>
 	</repositories>
 
 	<dependencies>
@@ -64,14 +58,8 @@
 		<dependency>
 			<groupId>org.apache.opennlp</groupId>
 			<artifactId>opennlp-tools</artifactId>
-			<version>1.5.3-SNAPSHOT</version>
+			<version>1.5.3</version>
 			<scope>compile</scope>
-		</dependency>
-
-		 <dependency>
-		  <groupId>opener</groupId>
-		  <artifactId>parser-en-model</artifactId>
-		  <version>1.0</version>
 		</dependency>
 	</dependencies>
 
@@ -92,7 +80,7 @@
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<manifestEntries>
-										<Main-Class>ehu.opennlp.parse.en.CLI</Main-Class>
+										<Main-Class>ehu.parse.CLI</Main-Class>
 										<!-- <Class-Path>../models/models.jar</Class-Path> -->
 									</manifestEntries>
 								</transformer>
@@ -110,7 +98,7 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.2.1</version>
 				<configuration>
-					<mainClass>ehu.opennlp.parse.en.CLI</mainClass>
+					<mainClass>ehu.parse.CLI</mainClass>
 				</configuration>
 			</plugin>
 

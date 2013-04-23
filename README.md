@@ -46,8 +46,9 @@ oof
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin features/my-new-feature`)
 5. If you're confident, merge your changes into master.
-IXA EHU-OpenNLP-Parser-EN module
-==================
+
+IXA EHU-Parser module
+=====================
 
 This module provides a simple wrapper that uses Apache OpenNLP
 programatically to provide constituent syntactic analysis.
@@ -56,7 +57,7 @@ English parse model provided by Apache OpenNLP:
 
 http://opennlp.sourceforge.net/models-1.5/en-parser-chunking.bin
 
-Version 1.0 of ehu-opennlp-parse-en is being developed as part of the 7th Framework OpeNER European Project.
+Version 1.0 of ehu-parse is being developed as part of the 7th Framework OpeNER European Project.
 
 
 Contents
@@ -78,10 +79,10 @@ The contents of the module are the following:
 - README.md: This README
 
 
-INSTALLING Version 1.0 of ehu-opennlp-parse-en module
+INSTALLING Version 1.0 of ehu-parse module
 =======================================================
 
-Installing the ehu-opennlp-parse-en module requires the following steps:
+Installing the ehu-parse module requires the following steps:
 
 If you already have installed in your machine JDK6 and MAVEN 3, please go to step 3
 directly. Otherwise, follow these steps:
@@ -166,18 +167,19 @@ mvn clean install
 This step will create a directory called target/ which contains various directories and files.
 Most importantly, there you will find the module executable:
 
-ehu-opennlp-parse-en-1.0.jar
+ehu-parse-1.0.jar
 
 This executable contains every dependency the module needs, so it is completely portable as long
 as you have a JVM 1.6 installed.
 
 The program takes KAF documents (with <wf> elements as it needs tokenized text) as standard input and outputs constituent syntactic
-analysis in treebank format, one sentence per line.
+analysis in treebank format, one sentence per line. It also provides an option of outputting the constituent heads, as defined
+by Collins PhD thesis.
 
 To run the program execute:
 
 ````shell
-cat wfinput.kaf | java -jar $PATH/target/ehu-opennlp-parse-en-1.0.jar
+cat wfinput.kaf | java -jar $PATH/target/ehu-parse-1.0.jar -l en -g synt
 ````
 
 GENERATING JAVADOC
@@ -189,7 +191,7 @@ You can also generate the javadoc of the module by executing:
 mvn javadoc:jar
 ````
 
-Which will create a jar file core/target/ehu-opennlp-parse-en-1.0-javadoc.jar
+Which will create a jar file core/target/ehu-parse-1.0-javadoc.jar
 
 Contact information
 ===================

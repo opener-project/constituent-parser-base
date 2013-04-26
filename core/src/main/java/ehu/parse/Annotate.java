@@ -69,7 +69,7 @@ public class Annotate {
  * @throws JDOMException 
    */
 
-  public String getConstituenParseWithHeads(
+  public String getConstituentParseWithHeads(
       List<Element> wfs, HeadFinder headFinder) throws IOException, JDOMException {
 	  
 	  LinkedHashMap<String, List<String>> sentencesMap = kafUtils

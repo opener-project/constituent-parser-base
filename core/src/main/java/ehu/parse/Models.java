@@ -21,7 +21,8 @@ import java.io.InputStream;
 public class Models {
 
   private InputStream parseModel;
-
+  private InputStream headsFile; 
+  
   public InputStream getParseModel(String cmdOption) {
 
     if (cmdOption.equals("en")) {
@@ -29,9 +30,21 @@ public class Models {
     }
 
     if (cmdOption.equals("es")) {
-      parseModel = getClass().getResourceAsStream("/en-parser-chunking.bin");
+      parseModel = getClass().getResourceAsStream("/es-parser-chunking.bin");
     }
     return parseModel;
   }
+  
+  public InputStream getHeadRulesFile(String cmdOption) {
+
+	    if (cmdOption.equals("en")) {
+	      headsFile = getClass().getResourceAsStream("/en-head-rules");
+	    }
+
+	    if (cmdOption.equals("es")) {
+	      headsFile = getClass().getResourceAsStream("/es-head-rules");
+	    }
+	    return headsFile;
+	  }
 
 }

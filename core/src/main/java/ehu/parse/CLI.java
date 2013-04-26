@@ -67,14 +67,14 @@ public class CLI {
 
     // create Argument Parser
     ArgumentParser parser = ArgumentParsers.newArgumentParser(
-        "ixa-pipe-parse-1.0.jar").description(
-        "ixa-pipe-parse-1.0 is a multilingual Constituent Parsing module "
+        "ehu-parse-1.0.jar").description(
+        "ehu-parse-1.0 is a multilingual Constituent Parsing module "
             + "developed by IXA NLP Group based on Apache OpenNLP API.\n");
 
     // specify language
     parser
         .addArgument("-l", "--lang")
-        .choices("en", "es")
+        .choices("en","es")
         .required(true)
         .help(
             "It is REQUIRED to choose a language to perform annotation with ixa-pipe-parse");
@@ -96,7 +96,7 @@ public class CLI {
     } catch (ArgumentParserException e) {
       parser.handleError(e);
       System.out
-          .println("Run java -jar target/ixa-pipe-parse-1.0.jar -help for details");
+          .println("Run java -jar target/ehu-parse-1.0.jar -help for details");
       System.exit(1);
     }
 
@@ -118,6 +118,7 @@ public class CLI {
     StringBuilder sb = new StringBuilder();
     BufferedReader breader = null;
     BufferedWriter bwriter = null;
+    
     try {
       breader = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
       bwriter = new BufferedWriter(new OutputStreamWriter(System.out, "UTF-8"));
@@ -143,29 +144,27 @@ public class CLI {
         if (lang.equalsIgnoreCase("en")) {
 
           if (headFinderOption.equalsIgnoreCase("synt")) {
-            headFinder = new CollinsHeadFinder();
+            headFinder = new CollinsHeadFinder(lang);
           } else {
+        	  // headFinder = new SemanticHeadFinder(lang);
             System.err
                 .println("English Semantic Head Finder not yet available. Using Collins instead.");
-            headFinder = new CollinsHeadFinder();
+            headFinder = new CollinsHeadFinder(lang);
           }
         }
         if (lang.equalsIgnoreCase("es")) {
           if (headFinderOption.equalsIgnoreCase("synt")) {
-            // headFinder = new AncoraHeadFinder();
-            System.err
-                .println("Spanish Head Finder not available. Using English instead");
-            headFinder = new CollinsHeadFinder();
+            headFinder = new CollinsHeadFinder(lang);
           } else {
-            // headFinder = new SpanishSemHeadFinder();
+            // headFinder = new SemanticHeadFinder(lang);
             System.err
-                .println("Spanish Semantic Head Finder not available. Using English instead");
-            headFinder = new CollinsHeadFinder();
+                .println("Spanish Semantic Head Finder not available. Using Collins instead");
+            headFinder = new CollinsHeadFinder(lang);
           }
         }
 
         // parse with heads
-        bwriter.write(annotator.getConstituenParseWithHeads(wfs, headFinder));
+        bwriter.write(annotator.getConstituentParseWithHeads(wfs, headFinder));
       }
         // parse without heads
       else {

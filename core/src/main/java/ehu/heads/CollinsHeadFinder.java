@@ -22,39 +22,54 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 
+import ehu.parse.Models;
+
+import opennlp.tools.parser.HeadRules;
 import opennlp.tools.parser.Parse;
 
 /**
- * HeadFinder for constituent parse using Collins rules. These rules and the getHead() method 
- * are specified in EnglishHeadRules.java. 
+ * HeadFinder for constituent parse using Collins rules. These rules and the 
+ * getHead() method in the language specific HeadRules classes (adapted from 
+ * Collins' original head rules).   
+ * 
  * 
  * @author ragerri
  *
  */
 public class CollinsHeadFinder implements HeadFinder {
 	
-	private static EnglishHeadRules headRules;
-	
+	private static HeadRules headRules;
 	/**
-	 * Constructor which reads the file en-head-rules at the root of classpath
+	 * Constructor which reads the file $lang-head-rules at the root of classpath
 	 * The file is read only the first time an instance is loaded.
 	 * Every instance shares the same internal rules representation
 	 * 
 	 */
-	public CollinsHeadFinder() {
+	public CollinsHeadFinder(String lang) {
 		try{
 			if(headRules==null){
-				InputStream is=getClass().getResourceAsStream("/en-head-rules");
-				headRules=new EnglishHeadRules(new InputStreamReader(is));
+				Models headFileRetriever = new Models();
+				//InputStream is=getClass().getResourceAsStream("/en-head-rules");
+				InputStream is = headFileRetriever.getHeadRulesFile(lang);
+				//headRules=new EnglishHeadRules(new InputStreamReader(is));
+				
+				if (lang.equalsIgnoreCase("en")) {
+					headRules=new EnglishHeadRules(new InputStreamReader(is));
+				}
+				if (lang.equalsIgnoreCase("es")) { 
+					headRules=new SpanishHeadRules(new InputStreamReader(is));
+				}
 				is.close();
 			}
-		}catch(Exception e){
+		}
+		catch(Exception e){
 			throw new RuntimeException(e);
 		}
 	}
 	
 	/**
-	 * Modifies the input Parse tree annotating the type of heads with '=H' according to headrules
+	 * Modifies the input Parse tree annotating the heads with 
+	 * '=H' according to every language specific HeadRules class. 
 	 * 
 	 * This function written by Aitor Garcia Pablos (Vicomtech).
 	 * 

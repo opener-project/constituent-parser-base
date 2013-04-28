@@ -50,12 +50,7 @@ oof
 IXA EHU-Parser module
 =====================
 
-This module provides a simple wrapper that uses Apache OpenNLP
-programatically to provide constituent syntactic analysis.
-
-English parse model provided by Apache OpenNLP:
-
-http://opennlp.sourceforge.net/models-1.5/en-parser-chunking.bin
+This module provides a constituent Parser based on Apache OpenNLP API.
 
 Version 1.0 of ehu-parse is being developed as part of the 7th Framework OpeNER European Project.
 
@@ -69,7 +64,6 @@ The contents of the module are the following:
 
     + formatter.xml           Apache OpenNLP code formatter for Eclipse SDK
     + INSTALL                 Instructions to install and run the module
-    + opener/                 trained models for parsing in English
     + pom.xml                 maven pom file which deals with everything related to compilation and execution of the module
     + src/                    java source code of the module
     + Furthermore, the installation process, as described in the README.md, will generate another directory:
@@ -180,6 +174,12 @@ To run the program execute:
 
 ````shell
 cat wfinput.kaf | java -jar $PATH/target/ehu-parse-1.0.jar -l en -g synt
+````
+
+For other options, run:
+
+````shell
+java -jar ehu-parse-1.0.jar -help
 ````
 
 GENERATING JAVADOC

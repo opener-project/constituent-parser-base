@@ -43,8 +43,9 @@ module Opener
       # @see Opener::ConstituentParsers::DEFAULT_OPTIONS
       #
       def initialize(options = {})
+        options  = DEFAULT_OPTIONS.merge(options)
         @args    = options.delete(:args) || []
-        @options = DEFAULT_OPTIONS.merge(options)
+        @options = options
       end
 
       ##

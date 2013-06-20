@@ -4,7 +4,7 @@
 *.so
 *.so.old
 *.swp
-target
+core/target
 *.class
 *.classpath
 *.project
@@ -19,3 +19,4 @@ tmp/*
 pkg/
 Gemfile.lock
 .rvmrc
+dependency-reduced-pom.xml

@@ -1,213 +1,72 @@
-# Opener::Kernel::EHU::Parser::EN
+# Constituent Base Parsers
 
-## Initial Version
+This repository contains the source code of the base constituent parser which
+supports both English and Spanish. The parser takes KAF documents (with <wf>
+elements as it needs tokenized text) as standard input and outputs constituent
+syntactic analysis in treebank format, one sentence per line. It also provides
+an option of outputting the constituent heads, as defined by Collins PhD
+thesis.
 
-TODO: Write a gem description
+## Requirements
+
+* Java 1.7 or newer
+* Ruby 1.9.2 or newer
+
+Development requirements:
+
+* Maven
+* Bundler
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Installing as a regular Gem:
 
-    gem 'EHU-parser_EN_kernel', :git=>"git@github.com/opener-project/EHU-parser_EN_kernel.git"
+    gem install opener-constituent-parser-base
 
-And then execute:
+Using Bundler:
 
-    $ bundle install
+    gem 'opener-constituent-parser-base',
+      :git    => 'git@github.com:opener-project/constituent-parser-base.git',
+      :branch => 'master'
 
-Or install it yourself as:
+Using specific install:
 
-    $ gem specific_install EHU-parser_EN_kernel -l https://github.com/opener-project/EHU-parser_EN_kernel.git
-
-
-If you dont have specific_install already:
-
-    $ gem install specific_install
+    gem install specific_install
+    gem specific_install opener-constituent-parser-base \
+       -l https://github.com/opener-project/constituent-parser-base.git
 
 ## Usage
 
-Once installed as a gem you can access the gem from anywhere:
-
-
-TODO: Change output below as needed
-````shell
-echo "foo" | EHU-parser_EN_kernel
-````
-
-Will output
-
-````
-oof
-````
+    cat some_input_file.kaf | constituent-parser-base
 
 ## Contributing
 
-1. Pull it
-2. Create your feature branch (`git checkout -b features/my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin features/my-new-feature`)
-5. If you're confident, merge your changes into master.
+First make sure all the required dependencies are installed:
 
-IXA EHU-Parser module
-=====================
+    bundle install
 
-This module provides a constituent Parser based on Apache OpenNLP API.
+Then compile the required Java code:
 
-Version 1.0 of ehu-parse is being developed as part of the 7th Framework OpeNER European Project.
+    bundle exec rake compile
 
+For this you'll need to have Java 1.7 and Maven installed. These requirements
+are verified for you before the Rake task calls Maven.
 
-Contents
-========
+## Testing
 
-The contents of the module are the following:
+To run the tests (which are powered by Cucumber), simply run the following:
 
-- core: directory containing the parse module
+    bundle exec rake
 
-    + formatter.xml           Apache OpenNLP code formatter for Eclipse SDK
-    + INSTALL                 Instructions to install and run the module
-    + pom.xml                 maven pom file which deals with everything related to compilation and execution of the module
-    + src/                    java source code of the module
-    + Furthermore, the installation process, as described in the README.md, will generate another directory:
-    target/                 it contains binary executable and other directories
+This will take care of verifying the requirements, installing the required Java
+packages and running the tests.
 
-- features: directory containing test data
-- README.md: This README
+For more information on the available Rake tasks run the following:
 
+    bundle exec rake -T
 
-INSTALLING Version 1.0 of ehu-parse module
-=======================================================
+## Structure
 
-Installing the ehu-parse module requires the following steps:
-
-If you already have installed in your machine JDK6 and MAVEN 3, please go to step 3
-directly. Otherwise, follow these steps:
-
-1. Install JDK 1.6
--------------------
-
-If you do not install JDK 1.6 in a default location, you will probably need to configure the PATH in .bashrc or .bash_profile:
-
-````shell
-export JAVA_HOME=/yourpath/local/java6
-export PATH=${JAVA_HOME}/bin:${PATH}
-````
-
-If you use tcsh you will need to specify it in your .login as follows:
-
-````shell
-setenv JAVA_HOME /usr/java/java16
-setenv PATH ${JAVA_HOME}/bin:${PATH}
-````
-
-If you re-login into your shell and run the command
-
-````shell
-java -version
-````
-
-You should now see that your jdk is 1.6
-
-2. Install MAVEN 3
-------------------
-
-Download MAVEN 3 from
-
-````shell
-wget http://ftp.udc.es/apache/maven/maven-3/3.0.4/binaries/apache-maven-3.0.4-bin.tar.gz
-````
-
-Now you need to configure the PATH. For Bash Shell:
-
-````shell
-export MAVEN_HOME=/home/ragerri/local/apache-maven-3.0.4
-export PATH=${MAVEN_HOME}/bin:${PATH}
-````
-
-For tcsh shell:
-
-````shell
-setenv MAVEN3_HOME ~/local/apache-maven-3.0.4
-setenv PATH ${MAVEN3}/bin:{PATH}
-````
-
-If you re-login into your shell and run the command
-
-````shell
-mvn -version
-````
-
-You should see reference to the MAVEN version you have just installed plus the JDK 7 that is using.
-
-3. Get module from github
--------------------------
-
-````shell
-git clone git@github.com:opener-project/EHU-parse_EN_kernel.git
-````
-
-4. Move into core directory
----------------------------
-
-````shell
-cd EHU-parse_EN_kernel/core
-````
-
-5. Install module using maven
------------------------------
-
-````shell
-mvn clean install
-````
-
-This step will create a directory called target/ which contains various directories and files.
-Most importantly, there you will find the module executable:
-
-ehu-parse-1.0.jar
-
-This executable contains every dependency the module needs, so it is completely portable as long
-as you have a JVM 1.6 installed.
-
-The program takes KAF documents (with <wf> elements as it needs tokenized text) as standard input and outputs constituent syntactic
-analysis in treebank format, one sentence per line. It also provides an option of outputting the constituent heads, as defined
-by Collins PhD thesis.
-
-To run the program execute:
-
-````shell
-cat wfinput.kaf | java -jar $PATH/target/ehu-parse-1.0.jar -l en -g synt
-````
-
-For other options, run:
-
-````shell
-java -jar ehu-parse-1.0.jar -help
-````
-
-GENERATING JAVADOC
-==================
-
-You can also generate the javadoc of the module by executing:
-
-````shell
-mvn javadoc:jar
-````
-
-Which will create a jar file core/target/ehu-parse-1.0-javadoc.jar
-
-Contact information
-===================
-
-````shell
-Rodrigo Agerri
-IXA NLP Group
-University of the Basque Country (UPV/EHU)
-E-20018 Donostia-San Sebastián
-rodrigo.agerri@ehu.es
-````
-
-
-
-
-
-
-
-
+This repository comes in two parts: a collection of Java source files and Ruby
+source files. The Java code can be found in the `core/` directory, everything
+else will be Ruby source code.

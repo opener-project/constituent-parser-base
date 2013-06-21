@@ -59,6 +59,9 @@ public class CollinsHeadFinder implements HeadFinder {
 				if (lang.equalsIgnoreCase("es")) { 
 					headRules=new SpanishHeadRules(new InputStreamReader(is));
 				}
+				if (lang.equalsIgnoreCase("it")) { 
+					headRules=new ItalianHeadRules(new InputStreamReader(is));
+				}
 				is.close();
 			}
 		}

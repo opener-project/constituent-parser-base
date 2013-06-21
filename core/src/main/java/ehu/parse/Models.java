@@ -32,6 +32,9 @@ public class Models {
     if (cmdOption.equals("es")) {
       parseModel = getClass().getResourceAsStream("/es-parser-chunking.bin");
     }
+    if (cmdOption.equals("it")) {
+        parseModel = getClass().getResourceAsStream("/it-parser-chunking.bin");
+      }
     return parseModel;
   }
   
@@ -44,6 +47,9 @@ public class Models {
 	    if (cmdOption.equals("es")) {
 	      headsFile = getClass().getResourceAsStream("/es-head-rules");
 	    }
+	    if (cmdOption.equals("it")) {
+		      headsFile = getClass().getResourceAsStream("/it-head-rules");
+		    }
 	    return headsFile;
 	  }
 

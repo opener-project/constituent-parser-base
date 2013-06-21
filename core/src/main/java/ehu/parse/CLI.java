@@ -70,7 +70,7 @@ public class CLI {
     // specify language
     parser
         .addArgument("-l", "--lang")
-        .choices("en","es")
+        .choices("en","es","it")
         .required(true)
         .help(
             "It is REQUIRED to choose a language to perform annotation with ixa-pipe-parse");
@@ -147,6 +147,17 @@ public class CLI {
             headFinder = new CollinsHeadFinder(lang);
           }
         }
+        
+        if (lang.equalsIgnoreCase("it")) {
+            if (headFinderOption.equalsIgnoreCase("synt")) {
+              headFinder = new CollinsHeadFinder(lang);
+            } else {
+              // headFinder = new SemanticHeadFinder(lang);
+              System.err
+                  .println("Italian Semantic Head Finder not available. Using Collins instead");
+              headFinder = new CollinsHeadFinder(lang);
+            }
+          }
 
         // parse with heads
         bwriter.write(annotator.getConstituentParseWithHeads(kaf, headFinder));

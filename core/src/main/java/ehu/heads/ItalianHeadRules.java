@@ -1,18 +1,18 @@
 /*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *Copyright 2013 Rodrigo Agerri and Apache Software Foundation (ASF)
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 
@@ -36,18 +36,12 @@ import opennlp.tools.parser.Parse;
 import opennlp.tools.parser.chunking.Parser;
 
 /**
- * Class for storing the Spanish head rules associated with parsing. The headrules
- * are specified in $src/main/resources/es-head-rules
- *  
- * NOTE: This class has been adapted from opennlp.tools.parser.lang.en. 
- * 
- * Note also the change in the return of the getHead() method: In Apache OpenNLP
- * class: return constituents[ci].getHead(); Now: return constituents[ci];
+ *
+ *  * Before: return constituents[ci].getHead(); Now: return constituents[ci];
  * 
  * Other changes include removal of deprecated methods we do not need to use. 
  * 
  */
-
 public class ItalianHeadRules implements opennlp.tools.parser.HeadRules, GapLabeler {
 
   private static class HeadRule {
@@ -114,13 +108,8 @@ public class ItalianHeadRules implements opennlp.tools.parser.HeadRules, GapLabe
       return null;
     }
     HeadRule hr;
-    //if (type.equals("SN") || type.equals("GRUP.NOM")) {
-      if (type.startsWith("SN") || type.startsWith("GRUP.NOM")) {
-      String[] tags1 = { "NCMS000", "NCFS000", "NCCS000", "NCMS00D", "NCMS00A", "NCFS00D","NCFS00A", "NCCS00A", "NCCS00D", 
-    		  "NP0000", "NCMP000", "NCFP000", "NCCP000", "NCMP00D", "NCMP00A", "NCFP00D","NCFP00A", "NCCP00A", "NCCP00D", 
-    		  "GRUP.NOM", "AQAMS0","AQAFS0","AQACS0", "AQAMN0", "AQAFN0", "AQACN0", "AQAMP0","AQAFP0","AQACP0",
-    		  "AQCMS0","AQCFS0","AQCCS0", "AQCMN0", "AQCFN0", "AQCCN0", "AQCMP0","AQCFP0","AQCCP0" };
-      
+    if (type.equals("NP")) {
+      String[] tags1 = { "NOU~CS", "NOU~PR","NOU~CP", "ADJ~PO"};
       for (int ci = constituents.length - 1; ci >= 0; ci--) {
         for (int ti = tags1.length - 1; ti >= 0; ti--) {
           if (constituents[ci].getType().equals(tags1[ti])) {
@@ -129,11 +118,11 @@ public class ItalianHeadRules implements opennlp.tools.parser.HeadRules, GapLabe
         }
       }
       for (int ci = 0; ci < constituents.length; ci++) {
-        if (constituents[ci].getType().equals("SN")) {
+        if (constituents[ci].getType().equals("NP")) {
           return constituents[ci];
         }
       }
-      String[] tags2 = { "$", "SA","S.A","GRUP.A" };
+      String[] tags2 = { "$", "ADJP", "PRN" };
       for (int ci = constituents.length - 1; ci >= 0; ci--) {
         for (int ti = tags2.length - 1; ti >= 0; ti--) {
           if (constituents[ci].getType().equals(tags2[ti])) {
@@ -141,11 +130,7 @@ public class ItalianHeadRules implements opennlp.tools.parser.HeadRules, GapLabe
           }
         }
       }
-      String[] tags3 = { "AQ0MS0","AQ0FS0","AQ0CS0","AQ0MSP","AQ0FSP","AQ0CSP","AQ0CNP",
-    		  "AQ0MP0","AQ0FP0","AQ0CP0","AQ0MPP","AQ0FPP","AQ0CPP",
-    		  "AQ0MN0","AQ0FN0","AQ0CN0","AQ0MNP","AQ0FNP","AQ0CNP",
-    		  "AQSMS0","AQSFS0","AQSCS0", "AQSMN0", "AQSFN0", "AQSCN0", "AQSMP0","AQSFP0","AQSCP0", 
-    		   "RG","RN", "GRUP.NOM" };
+      String[] tags3 = { "ADJ~QU", "ADJ~PO", "ADVP", "ADVB"};
       for (int ci = constituents.length - 1; ci >= 0; ci--) {
         for (int ti = tags3.length - 1; ti >= 0; ti--) {
           if (constituents[ci].getType().equals(tags3[ti])) {
@@ -162,9 +147,7 @@ public class ItalianHeadRules implements opennlp.tools.parser.HeadRules, GapLabe
       if (hr.leftToRight) {
         for (int ti = 0; ti < tl; ti++) {
           for (int ci = 0; ci < cl; ci++) {
-        	  // TODO: Examine this function closely are we infra-heading or over-heading?
-            //if (constituents[ci].getType().equals(tags[ti]) || constituents[ci].getType().startsWith(tags[ti])) {
-        	 if (constituents[ci].getType().equals(tags[ti])) {
+            if (constituents[ci].getType().equals(tags[ti])) {
               return constituents[ci];
             }
           }
@@ -187,7 +170,7 @@ public class ItalianHeadRules implements opennlp.tools.parser.HeadRules, GapLabe
 
   private void readHeadRules(BufferedReader str) throws IOException {
     String line;
-    headRules = new HashMap<String, HeadRule>(60);
+    headRules = new HashMap<String, HeadRule>(30);
     while ((line = str.readLine()) != null) {
       StringTokenizer st = new StringTokenizer(line);
       String num = st.nextToken();
@@ -212,13 +195,13 @@ public class ItalianHeadRules implements opennlp.tools.parser.HeadRules, GapLabe
       Constituent con4 = stack.get(stack.size()-5);
       //System.err.println("con0="+con0.label+" con1="+con1.label+" con2="+con2.label+" con3="+con3.label+" con4="+con4.label);
       //subject extraction
-      if (con1.getLabel().equals("SN") && con2.getLabel().equals("S") && con3.getLabel().equals("GRUP.NOM")) {
+      if (con1.getLabel().equals("NP") && con2.getLabel().equals("S") && con3.getLabel().equals("SBAR")) {
         con1.setLabel(con1.getLabel()+"-G");
         con2.setLabel(con2.getLabel()+"-G");
         con3.setLabel(con3.getLabel()+"-G");
       }
       //object extraction
-      else if (con1.getLabel().equals("SN") && con2.getLabel().equals("GRUP.VERB") && con3.getLabel().equals("S") && con4.getLabel().equals("GRUP.NOM")) {
+      else if (con1.getLabel().equals("NP") && con2.getLabel().equals("VP") && con3.getLabel().equals("S") && con4.getLabel().equals("SBAR")) {
         con1.setLabel(con1.getLabel()+"-G");
         con2.setLabel(con2.getLabel()+"-G");
         con3.setLabel(con3.getLabel()+"-G");

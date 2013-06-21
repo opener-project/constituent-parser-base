@@ -1,11 +1,16 @@
 # Constituent Base Parsers
 
 This repository contains the source code of the base constituent parser which
-supports both English and Spanish. The parser takes KAF documents (with <wf>
-elements as it needs tokenized text) as standard input and outputs constituent
-syntactic analysis in treebank format, one sentence per line. It also provides
-an option of outputting the constituent heads, as defined by Collins PhD
-thesis.
+supports the following languages:
+
+* English
+* Spanish
+* Italian
+
+The parser takes KAF documents (with <wf> elements as it needs tokenized text)
+as standard input and outputs constituent syntactic analysis in treebank
+format, one sentence per line. It also provides an option of outputting the
+constituent heads, as defined by Collins PhD thesis.
 
 ## Requirements
 

@@ -78,6 +78,9 @@ public class CLI {
         .action(Arguments.storeFalse())
         .required(false)
         .help("Do not print headWords");
+    
+    parser.addArgument("-t","--timestamp").action(Arguments.storeTrue()).help("flag to make timestamp static for continous " +
+        "integration testing");
 
     /*
      * Parse the command line arguments
@@ -112,6 +115,13 @@ public class CLI {
         else { 
          lang =  parsedArguments.getString("lang");
         }
+      // static timestamp for continuous integration
+      if (parsedArguments.getBoolean("timestamp") == true) {
+        kaf.addLinguisticProcessor("constituents","ehu-parse-"+lang,"now", "1.0");
+      }
+      else {
+        kaf.addLinguisticProcessor("constituents", "ehu-parse-"+lang, "1.0");
+      }
       Annotate annotator = new Annotate(lang);
       
       // choosing HeadFinder: (Collins rules for English and derivations of it

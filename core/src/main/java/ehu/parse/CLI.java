@@ -18,8 +18,6 @@ package ehu.parse;
 
 
 import ixa.kaflib.KAFDocument;
-import ehu.heads.CollinsHeadFinder;
-import ehu.heads.HeadFinder;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -28,14 +26,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
-
-import org.jdom2.JDOMException;
+import ehu.heads.CollinsHeadFinder;
+import ehu.heads.HeadFinder;
 
 /**
- * EHU-OpenNLP Constituent Parsing using Apache OpenNLP.
+ * ehu-parse: Constituent Parsing for 4 languages: English, Spanish, French and Italian
  * 
  * @author ragerri
  * @version 1.0
@@ -53,34 +52,32 @@ public class CLI {
    * provided via standard output.
    * 
    * @param args
-   * @throws IOException
-   * @throws JDOMException
+   * @throws Exception 
    */
 
-  public static void main(String[] args) throws IOException, JDOMException {
+  public static void main(String[] args) throws Exception {
 
     Namespace parsedArguments = null;
 
     // create Argument Parser
     ArgumentParser parser = ArgumentParsers.newArgumentParser(
-        "ixa-pipe-parse-1.0.jar").description(
-        "ixa-pipe-parse-1.0 is a multilingual Constituent Parsing module "
+        "ehu-parse-1.0.jar").description(
+        "ehu-parse-1.0 is a multilingual Constituent Parsing module "
             + "developed by IXA NLP Group based on Apache OpenNLP API.\n");
 
     // specify language
     parser
         .addArgument("-l", "--lang")
-        .choices("en","es","it","fr")
-        .required(true)
+        .choices("en", "es", "it", "fr")
+        .required(false)
         .help(
             "It is REQUIRED to choose a language to perform annotation with ixa-pipe-parse");
 
     parser
-        .addArgument("-g", "--heads")
-        .choices("synt", "sem")
+        .addArgument("--noHeads")
+        .action(Arguments.storeFalse())
         .required(false)
-        .help(
-            "It is REQUIRED to choose a language to perform annotation with ixa-pipe-parse");
+        .help("Do not print headWords");
 
     /*
      * Parse the command line arguments
@@ -92,24 +89,14 @@ public class CLI {
     } catch (ArgumentParserException e) {
       parser.handleError(e);
       System.out
-          .println("Run java -jar target/ixa-pipe-parse-1.0.jar -help for details");
+          .println("Run java -jar target/ehu-parse-1.0.jar -help for details");
       System.exit(1);
     }
 
     /*
      * Load language and headFinder parameters
      */
-
-    String lang = parsedArguments.getString("lang");
-    String headFinderOption;
-    if (parsedArguments.get("heads") == null) {
-      headFinderOption = "";
-    } else {
-      headFinderOption = parsedArguments.getString("heads");
-    }
-
-    // construct kaf Reader and read from standard input
-    Annotate annotator = new Annotate(lang);
+   
     BufferedReader breader = null;
     BufferedWriter bwriter = null;
     
@@ -117,65 +104,31 @@ public class CLI {
       breader = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
       bwriter = new BufferedWriter(new OutputStreamWriter(System.out, "UTF-8"));
       KAFDocument kaf = KAFDocument.createFromStream(breader);
+      // language parameter
+      String lang;
+      if (parsedArguments.get("lang") == null) { 
+          lang = kaf.getLang();
+        }
+        else { 
+         lang =  parsedArguments.getString("lang");
+        }
+      Annotate annotator = new Annotate(lang);
       
       // choosing HeadFinder: (Collins rules for English and derivations of it
       // for other languages; sem (Semantic headFinder re-implemented from
       // Stanford CoreNLP).
       // Default: sem (semantic head finder).
+      
 
-      HeadFinder headFinder = null;
-
-      if (!headFinderOption.isEmpty()) {
-        if (lang.equalsIgnoreCase("en")) {
-
-          if (headFinderOption.equalsIgnoreCase("synt")) {
-            headFinder = new CollinsHeadFinder(lang);
-          } else {
-        	  // headFinder = new SemanticHeadFinder(lang);
-            System.err
-                .println("English Semantic Head Finder not yet available. Using Collins instead.");
-            headFinder = new CollinsHeadFinder(lang);
-          }
-        }
-        if (lang.equalsIgnoreCase("es")) {
-          if (headFinderOption.equalsIgnoreCase("synt")) {
-            headFinder = new CollinsHeadFinder(lang);
-          } else {
-            // headFinder = new SemanticHeadFinder(lang);
-            System.err
-                .println("Spanish Semantic Head Finder not available. Using Collins instead");
-            headFinder = new CollinsHeadFinder(lang);
-          }
-        }
-        
-        if (lang.equalsIgnoreCase("it")) {
-            if (headFinderOption.equalsIgnoreCase("synt")) {
-              headFinder = new CollinsHeadFinder(lang);
-            } else {
-              // headFinder = new SemanticHeadFinder(lang);
-              System.err
-                  .println("Italian Semantic Head Finder not available. Using Collins instead");
-              headFinder = new CollinsHeadFinder(lang);
-            }
-          }
-        
-        if (lang.equalsIgnoreCase("fr")) {
-            if (headFinderOption.equalsIgnoreCase("synt")) {
-              headFinder = new CollinsHeadFinder(lang);
-            } else {
-              // headFinder = new SemanticHeadFinder(lang);
-              System.err
-                  .println("French Semantic Head Finder not available. Using Collins instead");
-              headFinder = new CollinsHeadFinder(lang);
-            }
-          }
+      if (parsedArguments.getBoolean("noHeads")) {
+        HeadFinder headFinder = new CollinsHeadFinder(lang);
 
         // parse with heads
-        bwriter.write(annotator.getConstituentParseWithHeads(kaf, headFinder));
+        bwriter.write(annotator.parseWithHeads(kaf, headFinder));
       }
         // parse without heads
       else {
-        bwriter.write(annotator.getConstituentParse(kaf));
+        bwriter.write(annotator.parse(kaf));
       }
 
       bwriter.close();

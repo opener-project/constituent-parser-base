@@ -1,6 +1,6 @@
 /*
  *
- *Copyright 2013 Rodrigo Agerri and Aitor Garcia Pablos
+ *Copyright 2013 Rodrigo Agerri
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -77,7 +77,7 @@ public class CollinsHeadFinder implements HeadFinder {
 	 * Modifies the input Parse tree annotating the heads with 
 	 * '=H' according to every language specific HeadRules class. 
 	 * 
-	 * This function written by Aitor Garcia Pablos (Vicomtech).
+	 *
 	 * 
 	 * @param parse
 	 */

@@ -16,23 +16,18 @@
 
 package ehu.parse;
 
-
 import ixa.kaflib.KAFDocument;
 import ixa.kaflib.WF;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
 import opennlp.tools.parser.Parse;
-
-import org.jdom2.JDOMException;
-
 import ehu.heads.HeadFinder;
 
 /**
  * @author ragerri
- *
+ * 
  */
 public class Annotate {
 
@@ -40,89 +35,85 @@ public class Annotate {
   private Models modelRetriever;
 
   public Annotate(String lang) {
-	modelRetriever = new Models();
-	InputStream parseModel = modelRetriever.getParseModel(lang);
+    modelRetriever = new Models();
+    InputStream parseModel = modelRetriever.getParseModel(lang);
     parser = new ConstituentParsing(parseModel);
   }
 
   private String getSentenceFromTokens(String[] tokens) {
-	  StringBuilder sb = new StringBuilder();
-	  for (int i=0; i<tokens.length; i++) {
-		  sb.append(tokens[i]).append(" ");
-	  }
-	  String sentence = sb.toString();
-	  return sentence;
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < tokens.length; i++) {
+      sb.append(tokens[i]).append(" ");
+    }
+    String sentence = sb.toString();
+    return sentence;
   }
 
-
   /**
-   * This method uses the Apache OpenNLP to perform Constituent parsing.
-   *
-   * It gets a Map<SentenceId, tokens> from the input KAF document and iterates
-   * over the tokens of each sentence.
-   * @param List<Element> wfs
-   * @return String parsed document
- * @throws JDOMException
+   * This method produces constituent parsing in KAF with headwords marked
+   * 
+   * @param KAFDocument
+   *          kaf
+   * @param HeadFinder
+   *          headFinder
+   * @throws Exception
    */
 
-  public String getConstituentParseWithHeads(KAFDocument kaf, HeadFinder headFinder) throws IOException {
+  public String parseWithHeads(KAFDocument kaf, HeadFinder headFinder)
+      throws Exception {
 
-	StringBuffer parsingDoc = new StringBuffer();
-	List<List<WF>> sentences = kaf.getSentences();
-	for (List<WF> sentence: sentences) {
-	//get array of token forms from a list of WF objects
+    StringBuffer parsingDoc = new StringBuffer();
+    List<List<WF>> sentences = kaf.getSentences();
+    for (List<WF> sentence : sentences) {
+      // get array of token forms from a list of WF objects
       String[] tokens = new String[sentence.size()];
-      for (int i=0; i < sentence.size(); i++) {
+      for (int i = 0; i < sentence.size(); i++) {
         tokens[i] = sentence.get(i).getForm();
       }
 
       // Constituent Parsing
-     String sent = this.getSentenceFromTokens(tokens);
-     Parse parsedSentence[] = parser.parse(sent,1);
-      for(Parse parse:parsedSentence){
-      	headFinder.printHeads(parse);
+      String sent = getSentenceFromTokens(tokens);
+      Parse parsedSentence[] = parser.parse(sent, 1);
+      for (Parse parse : parsedSentence) {
+        headFinder.printHeads(parse);
       }
       for (Parse parsedSent : parsedSentence) {
-    	  parsedSent.show(parsingDoc);
-    	  parsingDoc.append("\n");
+        parsedSent.show(parsingDoc);
+        parsingDoc.append("\n");
       }
-     }
-	return parsingDoc.toString();
     }
+    kaf.addConstituencyFromParentheses(parsingDoc.toString());
+    return kaf.toString();
+  }
 
   /**
-   * This method uses the Apache OpenNLP to perform Constituent parsing.
-   *
-   * It gets a Map<SentenceId, tokens> from the input KAF document and iterates
-   * over the tokens of each sentence.
-   * @param List<Element> wfs
-   * @return String parsed document
- * @throws JDOMException
+   * This method provides constituent parsing in KAF
+   * 
+   * @param KAFDocument
+   *          kaf
+   * @throws Exception
    */
+  public String parse(KAFDocument kaf) throws Exception {
 
-   public String getConstituentParse(KAFDocument kaf) throws IOException {
-
-     StringBuffer parsingDoc = new StringBuffer();
-     List<List<WF>> sentences = kaf.getSentences();
-     for (List<WF> sentence : sentences) {
-       String [] tokens = new String[sentence.size()];
-       for (int i=0; i < sentence.size(); i++) {
-         tokens[i] = sentence.get(i).getForm();
-       }
+    StringBuffer parsingDoc = new StringBuffer();
+    List<List<WF>> sentences = kaf.getSentences();
+    for (List<WF> sentence : sentences) {
+      // get array of token forms from a list of WF objects
+      String[] tokens = new String[sentence.size()];
+      for (int i = 0; i < sentence.size(); i++) {
+        tokens[i] = sentence.get(i).getForm();
+      }
 
       // Constituent Parsing
       String sent = this.getSentenceFromTokens(tokens);
-      Parse parsedSentence[] = parser.parse(sent,1);
-      for (Parse parsedSent : parsedSentence) {
-          parsedSent.show(parsingDoc);
-          parsingDoc.append("\n");
+      Parse parsedSentence[] = parser.parse(sent, 1);
+      for (int i = 0; i < parsedSentence.length; i++) {
+        parsedSentence[i].show(parsingDoc);
+        parsingDoc.append("\n");
       }
-      }
-    return parsingDoc.toString();
-
     }
-
-
-
+    kaf.addConstituencyFromParentheses(parsingDoc.toString());
+    return kaf.toString();
+  }
 
 }

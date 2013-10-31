@@ -28,7 +28,7 @@ import opennlp.tools.parser.ParserFactory;
 import opennlp.tools.parser.ParserModel;
 
 /**
- * Simple Parse module based on Apache OpenNLP.
+ * Class to build the constituent parse model
  * 
  *  
  * @author ragerri 2012/11/30
@@ -46,8 +46,6 @@ public class ConstituentParsing {
    * using such model.
    */
   public ConstituentParsing(InputStream trainedModel) {
-
-    //InputStream trainedModel = getClass().getResourceAsStream("/en-parser-chunking.bin");
 
     try {
       parserModel = new ParserModel(trainedModel);

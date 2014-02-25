@@ -1,5 +1,14 @@
 require 'open3'
 
+require 'java'
+require  File.expand_path('../../../../core/target/ehu-parse-1.0.jar', __FILE__)
+
+import 'ehu.parse.Annotate'
+import 'ixa.kaflib.KAFDocument'
+import 'java.io.InputStreamReader'
+import 'ehu.heads.CollinsHeadFinder'
+#import 'ehu.heads.HeadFinder'
+
 require_relative 'base/version'
 
 module Opener
@@ -30,8 +39,7 @@ module Opener
       #
       DEFAULT_OPTIONS = {
         :args     => [],
-        :language => DEFAULT_LANGUAGE,
-        :heads    => 'synt'
+        :language => DEFAULT_LANGUAGE
       }.freeze
 
       ##
@@ -49,16 +57,6 @@ module Opener
       end
 
       ##
-      # Builds the command used to execute the kernel.
-      #
-      # @return [String]
-      #
-      def command
-        return "java -jar #{kernel} -l #{options[:language]} -g " \
-          "#{options[:heads]} #{args.join(' ')}"
-      end
-
-      ##
       # Runs the command and returns the output of STDOUT, STDERR and the
       # process information.
       #
@@ -66,46 +64,33 @@ module Opener
       # @return [Array]
       #
       def run(input)
-        unless File.file?(kernel)
-          raise "The Java kernel (#{kernel}) does not exist"
-        end
+        input     = StringIO.new(input) unless input.kind_of?(IO)
+        annotator = Annotate.new(language)
+        reader    = InputStreamReader.new(input.to_inputstream)
+        kaf       = KAFDocument.create_from_stream(reader)
+        kaf.add_linguistic_processor("constituents","ehu-parse-"+language,"now","1.0")
 
-        return Open3.capture3(command, :stdin_data => input)
-      end
-
-      ##
-      # Runs the command and takes care of error handling/aborting based on the
-      # output.
-      #
-      # @see #run
-      #
-      def run!(input)
-        stdout, stderr, process = run(input)
-
-        if process.success?
-          puts stdout
-
-          STDERR.puts(stderr) unless stderr.empty?
+        if heads?
+          head_finder = CollinsHeadFinder.new(language)
+          annotator.parseWithHeads(kaf, head_finder)
         else
-          abort stderr
+          annotator.parse(kaf)
         end
+
+        return kaf.to_string
       end
-
-      protected
-
+      #
       ##
       # @return [String]
       #
-      def core_dir
-        return File.expand_path('../../../../core/target', __FILE__)
+      def language
+        return options[:language]
       end
 
-      ##
-      # @return [String]
-      #
-      def kernel
-        return File.join(core_dir, 'ehu-parse-1.0.jar')
+      def heads?
+        true
       end
+
     end # Base
   end # ConstituentParsers
 end # Opener

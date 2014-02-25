@@ -7,5 +7,5 @@ def kernel_root
 end
 
 def kernel(language)
-  return Opener::ConstituentParsers::Base.new(:language => language)
+  return Opener::ConstituentParsers::Base.new(:language => language, :args=>['-t'])
 end

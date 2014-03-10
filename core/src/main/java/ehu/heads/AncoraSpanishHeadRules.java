@@ -1,6 +1,6 @@
 /*
  *
- *Copyright 2013 Rodrigo Agerri and Apache Software Foundation (ASF)
+ *Copyright 2013 Rodrigo Agerri
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -36,19 +36,21 @@ import opennlp.tools.parser.Parse;
 import opennlp.tools.parser.chunking.Parser;
 
 /**
- * Class for storing the Spanish head rules associated with parsing. The headrules
+ * Class for storing the Ancora Spanish head rules associated with parsing. The headrules
  * are specified in $src/main/resources/es-head-rules
  *  
- * NOTE: This class has been adapted from opennlp.tools.parser.lang.en. 
+ * NOTE: This class has been adapted from opennlp.tools.parser.lang.en.HeadRules
+ * 
+ * The main change is the constituents search direction in the first for loop.
  * 
  * Note also the change in the return of the getHead() method: In Apache OpenNLP
- * class: return constituents[ci].getHead(); Now: return constituents[ci];
+ * lang.en.HeadRules class: return constituents[ci].getHead(); Now: return constituents[ci];
  * 
  * Other changes include removal of deprecated methods we do not need to use. 
  * 
  */
 
-public class SpanishHeadRules implements opennlp.tools.parser.HeadRules, GapLabeler {
+public class AncoraSpanishHeadRules implements opennlp.tools.parser.HeadRules, GapLabeler {
 
   private static class HeadRule {
     public boolean leftToRight;
@@ -93,7 +95,7 @@ public class SpanishHeadRules implements opennlp.tools.parser.HeadRules, GapLabe
    *
    * @throws IOException if the head rules reader can not be read.
    */
-  public SpanishHeadRules(Reader rulesReader) throws IOException {
+  public AncoraSpanishHeadRules(Reader rulesReader) throws IOException {
     BufferedReader in = new BufferedReader(rulesReader);
     readHeadRules(in);
 
@@ -114,41 +116,33 @@ public class SpanishHeadRules implements opennlp.tools.parser.HeadRules, GapLabe
       return null;
     }
     HeadRule hr;
-    //if (type.equals("SN") || type.equals("GRUP.NOM")) {
-      if (type.startsWith("SN") || type.startsWith("GRUP.NOM")) {
-      String[] tags1 = { "NCMS000", "NCFS000", "NCCS000", "NCMS00D", "NCMS00A", "NCFS00D","NCFS00A", "NCCS00A", "NCCS00D", 
-    		  "NP0000", "NCMP000", "NCFP000", "NCCP000", "NCMP00D", "NCMP00A", "NCFP00D","NCFP00A", "NCCP00A", "NCCP00D", 
-    		  "GRUP.NOM", "AQAMS0","AQAFS0","AQACS0", "AQAMN0", "AQAFN0", "AQACN0", "AQAMP0","AQAFP0","AQACP0",
-    		  "AQCMS0","AQCFS0","AQCCS0", "AQCMN0", "AQCFN0", "AQCCN0", "AQCMP0","AQCFP0","AQCCP0" };
+      if (type.equals("SN") || type.equals("GRUP.NOM")) {
+      String[] tags1 = {"AQA.*","AQC.*","GRUP\\.A","S\\.A","NC.*S.*", "NP.*","NC.*P.*", "GRUP\\.NOM"};
       
-      for (int ci = constituents.length - 1; ci >= 0; ci--) {
-        for (int ti = tags1.length - 1; ti >= 0; ti--) {
-          if (constituents[ci].getType().equals(tags1[ti])) {
-            return constituents[ci];
+      for (int i = 0; i < constituents.length; i++) {
+        for (int t = tags1.length - 1; t >= 0; t--) {
+          if (constituents[i].getType().matches(tags1[t])) {
+            return constituents[i];
           }
         }
       }
       for (int ci = 0; ci < constituents.length; ci++) {
-        if (constituents[ci].getType().equals("SN")) {
+        if (constituents[ci].getType().equals("SN") || constituents[ci].getType().equals("GRUP.NOM")) {
           return constituents[ci];
         }
       }
-      String[] tags2 = { "$", "SA","S.A","GRUP.A" };
+      String[] tags2 = {"\\$","GRUP\\.A","SA"};
       for (int ci = constituents.length - 1; ci >= 0; ci--) {
         for (int ti = tags2.length - 1; ti >= 0; ti--) {
-          if (constituents[ci].getType().equals(tags2[ti])) {
+          if (constituents[ci].getType().matches(tags2[ti])) {
             return constituents[ci];
           }
         }
       }
-      String[] tags3 = { "AQ0MS0","AQ0FS0","AQ0CS0","AQ0MSP","AQ0FSP","AQ0CSP","AQ0CNP",
-    		  "AQ0MP0","AQ0FP0","AQ0CP0","AQ0MPP","AQ0FPP","AQ0CPP",
-    		  "AQ0MN0","AQ0FN0","AQ0CN0","AQ0MNP","AQ0FNP","AQ0CNP",
-    		  "AQSMS0","AQSFS0","AQSCS0", "AQSMN0", "AQSFN0", "AQSCN0", "AQSMP0","AQSFP0","AQSCP0", 
-    		   "RG","RN", "GRUP.NOM" };
+      String[] tags3 = {"AQ0.*", "AQ[AC].*","AO.*","GRUP\\.A","S\\.A","RG","RN","GRUP\\.NOM"};
       for (int ci = constituents.length - 1; ci >= 0; ci--) {
         for (int ti = tags3.length - 1; ti >= 0; ti--) {
-          if (constituents[ci].getType().equals(tags3[ti])) {
+          if (constituents[ci].getType().matches(tags3[ti])) {
             return constituents[ci];
           }
         }
@@ -162,9 +156,7 @@ public class SpanishHeadRules implements opennlp.tools.parser.HeadRules, GapLabe
       if (hr.leftToRight) {
         for (int ti = 0; ti < tl; ti++) {
           for (int ci = 0; ci < cl; ci++) {
-        	  // TODO: Examine this function closely are we infra-heading or over-heading?
-            //if (constituents[ci].getType().equals(tags[ti]) || constituents[ci].getType().startsWith(tags[ti])) {
-        	 if (constituents[ci].getType().equals(tags[ti])) {
+        	 if (constituents[ci].getType().matches(tags[ti])) {
               return constituents[ci];
             }
           }
@@ -174,7 +166,7 @@ public class SpanishHeadRules implements opennlp.tools.parser.HeadRules, GapLabe
       else {
         for (int ti = 0; ti < tl; ti++) {
           for (int ci = cl - 1; ci >= 0; ci--) {
-            if (constituents[ci].getType().equals(tags[ti])) {
+            if (constituents[ci].getType().matches(tags[ti])) {
               return constituents[ci];
             }
           }
@@ -275,8 +267,8 @@ public class SpanishHeadRules implements opennlp.tools.parser.HeadRules, GapLabe
     if (obj == this) {
       return true;
     }
-    else if (obj instanceof SpanishHeadRules) {
-      SpanishHeadRules rules = (SpanishHeadRules) obj;
+    else if (obj instanceof AncoraSpanishHeadRules) {
+      AncoraSpanishHeadRules rules = (AncoraSpanishHeadRules) obj;
       
       return rules.headRules.equals(headRules) &&
           rules.punctSet.equals(punctSet);

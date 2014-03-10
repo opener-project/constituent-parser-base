@@ -1,4 +1,5 @@
 require 'open3'
+require 'stringio'
 
 require 'java'
 require  File.expand_path('../../../../core/target/ehu-parse-1.0.jar', __FILE__)
@@ -7,7 +8,6 @@ import 'ehu.parse.Annotate'
 import 'ixa.kaflib.KAFDocument'
 import 'java.io.InputStreamReader'
 import 'ehu.heads.CollinsHeadFinder'
-#import 'ehu.heads.HeadFinder'
 
 require_relative 'base/version'
 
@@ -65,7 +65,7 @@ module Opener
       #
       def run(input)
         input     = StringIO.new(input) unless input.kind_of?(IO)
-        annotator = Annotate.new(language)
+        annotator = Java::ehu.parse.Annotate.new(language)
         reader    = InputStreamReader.new(input.to_inputstream)
         kaf       = KAFDocument.create_from_stream(reader)
         kaf.add_linguistic_processor("constituents","ehu-parse-"+language,"now","1.0")

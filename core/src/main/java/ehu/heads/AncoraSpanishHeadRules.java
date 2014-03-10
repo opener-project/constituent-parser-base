@@ -41,8 +41,6 @@ import opennlp.tools.parser.chunking.Parser;
  *  
  * NOTE: This class has been adapted from opennlp.tools.parser.lang.en.HeadRules
  * 
- * The main change is the constituents search direction in the first for loop.
- * 
  * Note also the change in the return of the getHead() method: In Apache OpenNLP
  * lang.en.HeadRules class: return constituents[ci].getHead(); Now: return constituents[ci];
  * 
@@ -118,8 +116,7 @@ public class AncoraSpanishHeadRules implements opennlp.tools.parser.HeadRules, G
     HeadRule hr;
       if (type.equals("SN") || type.equals("GRUP.NOM")) {
       String[] tags1 = {"AQA.*","AQC.*","GRUP\\.A","S\\.A","NC.*S.*", "NP.*","NC.*P.*", "GRUP\\.NOM"};
-      
-      for (int i = 0; i < constituents.length; i++) {
+      for (int i = constituents.length - 1; i >= 0; i--) {
         for (int t = tags1.length - 1; t >= 0; t--) {
           if (constituents[i].getType().matches(tags1[t])) {
             return constituents[i];

@@ -37,7 +37,7 @@ import opennlp.tools.parser.ParserModel;
 
 public class ConstituentParsing {
 
-  private ParserModel parserModel;
+  //private ParserModel parserModel;
   private Parser parser;
 
   /**
@@ -45,10 +45,11 @@ public class ConstituentParsing {
    * then it initializes the nercModel and finally it creates a nercDetector
    * using such model.
    */
+  @Deprecated
   public ConstituentParsing(InputStream trainedModel) {
-
+	  ParserModel parserModel=null;
     try {
-      parserModel = new ParserModel(trainedModel);
+    	parserModel = new ParserModel(trainedModel);
 
     } catch (IOException e) {
       e.printStackTrace();
@@ -61,6 +62,12 @@ public class ConstituentParsing {
       }
     }
     parser = ParserFactory.create(parserModel);
+  }
+  
+  public ConstituentParsing(String lang){
+	  Models models=new Models();
+	  ParserModel parserModel=models.getParserModel(lang);
+	  parser = ParserFactory.create(parserModel);
   }
 
   /**

@@ -3,8 +3,6 @@ require File.expand_path(
   __FILE__
 )
 
-generated = Dir.glob('core/target/ehu-parse-*.jar')
-
 Gem::Specification.new do |gem|
   gem.name        = 'opener-constituent-parser-base'
   gem.version     = Opener::ConstituentParsers::Base::VERSION
@@ -15,9 +13,14 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = '>= 1.9.2'
 
-  gem.files       = (`git ls-files`.split("\n") + generated).sort
-  gem.executables = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
-  gem.test_files  = gem.files.grep(%r{^(test|spec|features)/})
+  gem.files = Dir.glob([
+    'core/target/ehu-parse-*.jar',
+    'lib/**/*.*',
+    '*.gemspec',
+    'README.md'
+  ])
+
+  gem.executables = Dir.glob('bin/*').map { |f| File.basename(f) }
 
   gem.add_development_dependency 'opener-build-tools'
   gem.add_development_dependency 'rspec'

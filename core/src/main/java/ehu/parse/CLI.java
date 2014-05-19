@@ -54,7 +54,7 @@ public class CLI {
         .choices("en", "es", "it", "fr")
         .required(false)
         .help(
-            "It is REQUIRED to choose a language to perform annotation with ixa-pipe-parse");
+            "It is REQUIRED to choose a language to perform annotation with constituent-parse-base");
 
     parser
         .addArgument("--noHeads")
@@ -100,10 +100,10 @@ public class CLI {
         }
       // static timestamp for continuous integration
       if (parsedArguments.getBoolean("timestamp") == true) {
-        kaf.addLinguisticProcessor("constituents","ehu-parse-"+lang,"now", "1.0");
+        kaf.addLinguisticProcessor("constituency","ehu-parse-"+lang,"now", "1.0");
       }
       else {
-        kaf.addLinguisticProcessor("constituents", "ehu-parse-"+lang, "1.0");
+        kaf.addLinguisticProcessor("constituency", "ehu-parse-"+lang, "1.0");
       }
       Annotate annotator = new Annotate(lang);
       

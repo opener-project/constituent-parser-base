@@ -31,6 +31,8 @@ module Opener
       # @return [String]
       #
       DEFAULT_LANGUAGE = 'en'.freeze
+      
+      ACCEPTED_LANGUAGES = ['en', 'es', 'it', 'fr'].freeze
 
       ##
       # Hash containing the default options to use.
@@ -64,20 +66,24 @@ module Opener
       # @return [Array]
       #
       def run(input)
-        input     = StringIO.new(input) unless input.kind_of?(IO)
-        annotator = Java::ehu.parse.Annotate.new(language)
-        reader    = InputStreamReader.new(input.to_inputstream)
-        kaf       = KAFDocument.create_from_stream(reader)
-        kaf.add_linguistic_processor("constituents","ehu-parse-"+language,"now","1.0")
+        if ACCEPTED_LANGUAGES.include?(language)
+          input     = StringIO.new(input) unless input.kind_of?(IO)
+          annotator = Java::ehu.parse.Annotate.new(language)
+          reader    = InputStreamReader.new(input.to_inputstream)
+          kaf       = KAFDocument.create_from_stream(reader)
+          kaf.add_linguistic_processor("constituents","ehu-parse-"+language,"now","1.0")
 
-        if heads?
-          head_finder = CollinsHeadFinder.new(language)
-          annotator.parseWithHeads(kaf, head_finder)
+          if heads?
+            head_finder = CollinsHeadFinder.new(language)
+            annotator.parseWithHeads(kaf, head_finder)
+          else
+            annotator.parse(kaf)
+          end
+
+          return kaf.to_string
         else
-          annotator.parse(kaf)
+          return input
         end
-
-        return kaf.to_string
       end
       #
       ##

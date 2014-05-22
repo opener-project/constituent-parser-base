@@ -5,4 +5,6 @@ require_relative '../lib/opener/constituent_parsers/base'
 kernel = Opener::ConstituentParsers::Base.new(:args => ARGV, :language => 'it')
 input  = STDIN.tty? ? nil : STDIN.read
 
-kernel.run!(input)
+output = kernel.run(input)
+
+puts output

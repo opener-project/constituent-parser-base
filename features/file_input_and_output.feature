@@ -9,5 +9,10 @@ Feature: Using a dutch file as input and other file as an output
     And I put them through the kernel
     Then the output should match the fixture "<output_file>"
   Examples:
-    | language | input_file | output_file |
-    | en       | input.kaf  | out.tree    |
+    | language | input_file    | output_file   |
+    | en       | input.kaf     | out.kaf       |
+    | en       | input_en.kaf  | out_en.kaf    |
+    | es       | input_es.kaf  | out_es.kaf    |
+    | fr       | input_fr.kaf  | out_fr.kaf    |
+    | it       | input_it.kaf  | out_it.kaf    |
+    

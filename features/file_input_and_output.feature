@@ -1,9 +1,9 @@
-Feature: Using a dutch file as input and other file as an output
+Feature: Using a file as input and other file as an output
   In order to tokenize the file
   Using a file as an input
   Using a file as an output
 
-  Scenario Outline: tokenize dutch input file.
+  Scenario Outline: tokenize input file.
     Given the fixture file "<input_file>"
     And the language "<language>"
     And I put them through the kernel

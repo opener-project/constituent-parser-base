@@ -22,7 +22,6 @@ Gem::Specification.new do |gem|
 
   gem.executables = Dir.glob('bin/*').map { |file| File.basename(file) }
 
-  gem.add_development_dependency 'opener-build-tools'
   gem.add_development_dependency 'rspec', '~> 3.0'
   gem.add_development_dependency 'cucumber'
   gem.add_development_dependency 'rake'

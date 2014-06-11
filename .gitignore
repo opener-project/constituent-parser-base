@@ -21,3 +21,5 @@ Gemfile.lock
 .rvmrc
 dependency-reduced-pom.xml
 *~
+
+!.gitkeep

@@ -15,12 +15,12 @@ Gem::Specification.new do |gem|
 
   gem.files = Dir.glob([
     'core/target/ehu-parse-*.jar',
-    'lib/**/*.*',
+    'lib/**/*',
     '*.gemspec',
     'README.md'
-  ])
+  ]).select { |file| File.file?(file) }
 
-  gem.executables = Dir.glob('bin/*').map { |f| File.basename(f) }
+  gem.executables = Dir.glob('bin/*').map { |file| File.basename(file) }
 
   gem.add_development_dependency 'opener-build-tools'
   gem.add_development_dependency 'rspec'

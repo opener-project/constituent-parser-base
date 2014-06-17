@@ -10,9 +10,8 @@ Feature: Using a file as input and other file as an output
     Then the output should match the fixture "<output_file>"
   Examples:
     | language | input_file    | output_file   |
-    | en       | input.kaf     | out.kaf       |
-    | en       | input_en.kaf  | out_en.kaf    |
-    | es       | input_es.kaf  | out_es.kaf    |
-    | fr       | input_fr.kaf  | out_fr.kaf    |
-    | it       | input_it.kaf  | out_it.kaf    |
+    | en       | input-en.kaf  | output-en.kaf |
+    | es       | input-es.kaf  | output-es.kaf |
+    | fr       | input-fr.kaf  | output-fr.kaf |
+    | it       | input-it.kaf  | output-it.kaf |
     

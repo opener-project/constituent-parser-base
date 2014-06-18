@@ -8,10 +8,11 @@ supports the following languages:
 * English
 * Spanish
 * Italian
+* French
 
 The parser takes KAF documents (with <wf> elements as it needs tokenized text)
-as standard input and outputs constituent syntactic analysis in treebank
-format, one sentence per line. It also provides an option of outputting the
+as standard input and outputs constituent syntactic analysis in KAF or treebank
+format. It also provides an option of outputting the
 constituent heads, as defined by Collins PhD thesis.
 
 ## Requirements

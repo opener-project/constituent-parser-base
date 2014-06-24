@@ -4,7 +4,6 @@ require 'stringio'
 require 'java'
 require  File.expand_path('../../../../core/target/ehu-parse-1.0.jar', __FILE__)
 
-import 'ehu.parse.Annotate'
 import 'ixa.kaflib.KAFDocument'
 import 'java.io.InputStreamReader'
 import 'ehu.heads.CollinsHeadFinder'
@@ -31,7 +30,7 @@ module Opener
       # @return [String]
       #
       DEFAULT_LANGUAGE = 'en'.freeze
-      
+
       ACCEPTED_LANGUAGES = ['en', 'es', 'it', 'fr'].freeze
 
       ##

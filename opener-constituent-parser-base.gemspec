@@ -10,6 +10,7 @@ Gem::Specification.new do |gem|
   gem.summary     = 'Constituent parser that supports various languages.'
   gem.description = gem.summary
   gem.has_rdoc    = 'yard'
+  gem.license     = 'Apache 2.0'
 
   gem.required_ruby_version = '>= 1.9.2'
 
@@ -17,7 +18,8 @@ Gem::Specification.new do |gem|
     'core/target/ehu-parse-*.jar',
     'lib/**/*',
     '*.gemspec',
-    'README.md'
+    'README.md',
+    'LICENSE.txt'
   ]).select { |file| File.file?(file) }
 
   gem.executables = Dir.glob('bin/*').map { |file| File.basename(file) }

@@ -3,6 +3,9 @@ language: ruby
 
 script: bundle exec rake
 
+env:
+  - JRUBY_OPTS: "-J-Xmx2048m"
+
 rvm:
   - jruby
 
